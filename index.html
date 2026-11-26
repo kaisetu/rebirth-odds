@@ -46,19 +46,19 @@ button { font-family: inherit; }
 .snd.off .i-on { display: none; }
 .snd.off .i-off { display: block; }
 .stage-row { display: flex; align-items: center; gap: .5em; min-width: 0; }
-#stageTxt { flex: 1; min-width: 0; font-size: .74em; font-weight: 800; color: var(--paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 4px rgba(0,0,0,.6); }
-.bar { height: .42em; margin: 0 .15em; border-radius: 1em; background: rgba(241, 244, 251, .14); overflow: hidden; }
+#stageTxt { flex: 1; min-width: 0; font-size: .74em; font-weight: 800; color: var(--paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 3px rgba(6,10,20,.9), 0 0 8px rgba(6,10,20,.5); }
+.bar { height: .42em; margin: 0 .15em; border-radius: 1em; background: rgba(241, 244, 251, .14); box-shadow: inset 0 0 0 1px rgba(6, 10, 20, .22); overflow: hidden; }
 #progFill { height: 100%; width: 0; border-radius: 1em; background: var(--mint); }
-#scoreTxt { font: 800 .74em/1 var(--font-num); color: var(--gold); white-space: nowrap; font-variant-numeric: tabular-nums; }
+#scoreTxt { font: 800 .74em/1 var(--font-num); color: var(--gold); white-space: nowrap; font-variant-numeric: tabular-nums; text-shadow: 0 1px 3px rgba(6,10,20,.9), 0 0 8px rgba(6,10,20,.5); }
 #timeline { display: flex; gap: 2px; height: .32em; padding: 0 .15em; }
-#timeline i { flex: 1; border-radius: 1em; background: rgba(241, 244, 251, .14); }
+#timeline i { flex: 1; border-radius: 1em; background: rgba(241, 244, 251, .14); box-shadow: inset 0 0 0 1px rgba(6, 10, 20, .22); }
 #timeline i.done { background: rgba(143, 240, 200, .55); }
 #timeline i.now { background: rgba(241, 244, 251, .8); }
 #timeline.one { display: none; }
 
 /* ---------- bottom controls ---------- */
 #ctrl { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 .8em .8em; display: grid; gap: .45em; justify-items: center; }
-#holdHint { font-size: .74em; color: var(--mist); text-align: center; line-height: 1.4; min-height: 1.4em; word-break: keep-all; overflow-wrap: anywhere; }
+#holdHint { font-size: .74em; color: #c6cede; text-align: center; line-height: 1.4; min-height: 1.4em; word-break: keep-all; overflow-wrap: anywhere; text-shadow: 0 1px 3px rgba(6,10,20,.95), 0 0 10px rgba(6,10,20,.65); }
 #btnHold { pointer-events: auto; width: 100%; max-width: 21em; height: 3.6em; border-radius: 1.2em; border: 2px solid rgba(143, 211, 255, .55); background: rgba(12, 18, 36, .78); color: var(--paper); font: 800 1.02em/1 var(--font-body); letter-spacing: .04em; cursor: pointer; touch-action: none; display: flex; align-items: center; justify-content: center; gap: .55em; }
 #btnHold svg { width: 1.3em; height: 1.3em; }
 #btnHold.on { background: var(--sky); color: var(--ink); border-color: var(--sky); box-shadow: 0 0 0 .3em rgba(143, 211, 255, .2), 0 0 1.4em rgba(143, 211, 255, .45); }
@@ -316,6 +316,8 @@ button { font-family: inherit; }
   var L = JA ? 0 : 1;
   document.documentElement.lang = JA ? 'ja' : 'en';
   function T(p) { return p == null ? '' : (typeof p === 'string' ? p : p[L]); }
+  /* brackets that match the language: （…） in Japanese, " (…)" in English */
+  function paren(s) { return JA ? '（' + s + '）' : ' (' + s + ')'; }
 
   var STR = JA ? {
     sub: function (n) { return '地球で1年に生まれる約' + n + 'の命から、現実と同じ確率でひとつに生まれ変わる'; },
@@ -360,7 +362,7 @@ button { font-family: inherit; }
     resume: 'つづける',
     zkTitle: '図鑑', zkSub: function (a, b) { return '出会った種類 ' + a + ' / ' + b + '。確率は「全生物」で転生したときの値。'; },
     zkTimes: function (n) { return n + '回'; }, unknown: '？？？',
-    zkMore: function (b, s) { return '1年に生まれる数：約 ' + b + (s ? '　自己ベスト：' + s + '点' : ''); },
+    zkMore: function (b, s) { return '1年に生まれる数：約 ' + b + (s ? '　いちばん細い生き残り：' + s : ''); },
     abTitle: 'データについて',
     sexM: '男の子', sexF: '女の子',
     aria: 'いま生きている生き物と、そのまわりの世界',
@@ -408,7 +410,7 @@ button { font-family: inherit; }
     resume: 'Resume',
     zkTitle: 'Collection', zkSub: function (a, b) { return 'Kinds met ' + a + ' / ' + b + '. Odds are for rebirth among all life.'; },
     zkTimes: function (n) { return '×' + n; }, unknown: '???',
-    zkMore: function (b, s) { return 'Born per year: about ' + b + (s ? '  Your best: ' + s + ' pts' : ''); },
+    zkMore: function (b, s) { return 'Born per year: about ' + b + (s ? ' · Narrowest survival: ' + s : ''); },
     abTitle: 'About the data',
     sexM: 'Boy', sexF: 'Girl',
     aria: 'The living thing you are now and the world around it',
@@ -464,7 +466,9 @@ button { font-family: inherit; }
     if (x < 1e4) return fmtInt(x);
     if (JA) return '約' + jaBig(x);
     if (x < 1e6) return fmtInt(Math.round(x / 100) * 100);
-    return (x / 1e6).toFixed(x < 1e7 ? 1 : 0) + ' million';
+    if (x < 1e9) return (x / 1e6).toFixed(x < 1e7 ? 1 : 0).replace(/\.0$/, '') + ' million';
+    if (x < 1e12) return (x / 1e9).toFixed(x < 1e10 ? 1 : 0).replace(/\.0$/, '') + ' billion';
+    return sci(x);
   }
   /* probability: 32.7% or 1/51,000 or 1/1.3×10²² */
   function prob(p) {
@@ -1471,8 +1475,10 @@ button { font-family: inherit; }
      State, DOM, layout
      ========================================================= */
   var REC = (function () {
-    var d = { best: 0, n: 0, seen: {}, bestBy: {}, rare: 1, scope: 'all' };
+    /* minBy: lowest survival reached per kind (added later; older saves fall back to bestBy) */
+    var d = { best: 0, n: 0, seen: {}, bestBy: {}, minBy: {}, rare: 1, scope: 'all' };
     try { var j = JSON.parse(store.get('inochikuji.rec', '{}')); for (var k in j) d[k] = j[k]; } catch (e) { /* corrupt or blocked */ }
+    if (!d.minBy || typeof d.minBy !== 'object') d.minBy = {};
     return d;
   })();
   function saveRec() { try { store.set('inochikuji.rec', JSON.stringify(REC)); } catch (e) { /* ignore */ } }
@@ -2147,20 +2153,41 @@ button { font-family: inherit; }
       ctx.fillStyle = '#fff'; ctx.font = '700 9px ' + BODYFONT; ctx.fillText(it.name + (it.look ? ' ' + it.look : ''), cx, cy + 42);
     });
   }
+  /* soft dark bands behind the HUD and the controls, full width, so their text stays readable on bright scenes */
+  function drawScrims() {
+    var top = (OY + (HUD_H + 22) * S) * DPR, bot = (OY + (LH - CTRL_H - 30) * S) * DPR, g;
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+    g = ctx.createLinearGradient(0, 0, 0, top);
+    g.addColorStop(0, 'rgba(6,10,20,0.5)'); g.addColorStop(0.65, 'rgba(6,10,20,0.28)'); g.addColorStop(1, 'rgba(6,10,20,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, cv.width, top);
+    if (bot < cv.height) {
+      g = ctx.createLinearGradient(0, bot, 0, cv.height);
+      g.addColorStop(0, 'rgba(6,10,20,0)'); g.addColorStop(0.4, 'rgba(6,10,20,0.3)'); g.addColorStop(1, 'rgba(6,10,20,0.55)');
+      ctx.fillStyle = g; ctx.fillRect(0, bot, cv.width, cv.height - bot);
+    }
+    ctx.restore();
+  }
   function render() {
     var t = G.clock;
     if (G.gallery) { drawEnv(G.galleryEnv || 'sea', t); drawGallery(t); return; }
     if (G.phase === 'title' || G.phase === 'lottery') { drawEnv('sea', t); return; }
     var L = G.life; if (!L) { drawEnv('sea', t); return; }
     drawEnv(envFor(L), t);
+    drawScrims();
     drawOrganism(L, t);
     drawThreats(L, t);
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    for (var p = 0; p < pops.length; p++) { var o = pops[p]; ctx.globalAlpha = 1 - o.t; ctx.fillStyle = o.col; ctx.font = '800 16px ' + BODYFONT; ctx.fillText(o.txt, OCX, OCY - 70 - o.t * 24); }
+    ctx.font = '800 16px ' + BODYFONT; ctx.lineJoin = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(6,10,20,0.6)';
+    for (var p = 0; p < pops.length; p++) { var o = pops[p], py = OCY - 70 - o.t * 24; ctx.globalAlpha = 1 - o.t; ctx.strokeText(o.txt, OCX, py); ctx.fillStyle = o.col; ctx.fillText(o.txt, OCX, py); }
     ctx.globalAlpha = 1;
-    /* scale bar */
-    ctx.fillStyle = 'rgba(241,244,251,0.55)'; ctx.font = '700 10px ' + NUMFONT; ctx.textAlign = 'left';
-    var sz = L.hum ? '' : (L.e.size || ''); if (sz) { ctx.fillRect(14, LH - CTRL_H - 12, 28, 2); ctx.fillText(sz, 46, LH - CTRL_H - 11); }
+    /* scale bar (dark halo so it also shows on sky, sand and ice) */
+    ctx.font = '700 10px ' + NUMFONT; ctx.textAlign = 'left';
+    var sz = L.hum ? '' : (L.e.size || ''), sy = LH - CTRL_H - 12;
+    if (sz) {
+      ctx.fillStyle = 'rgba(6,10,20,0.5)'; ctx.fillRect(13, sy - 1, 30, 4);
+      ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(6,10,20,0.55)'; ctx.strokeText(sz, 46, sy + 1);
+      ctx.fillStyle = 'rgba(241,244,251,0.8)'; ctx.fillRect(14, sy, 28, 2); ctx.fillText(sz, 46, sy + 1);
+    }
     if (!L.alive) { ctx.fillStyle = 'rgba(6,10,20,' + clamp(L.deadT / 1.8, 0, 0.55).toFixed(2) + ')'; ctx.fillRect(-OX / S - 2, -OY / S - 2, W / S + 4, H / S + 4); }
   }
 
@@ -2173,7 +2200,7 @@ button { font-family: inherit; }
     btnSound: $('btnSound'), btnSound2: $('btnSound2'), speed: $('btnSpeed'), copyBox: $('copyBox'), btnCopy: $('btnCopy')
   };
   var STR2 = JA ? { inAll: function (p) { return '全生物の中では ' + p; }, birthsC: function (n) { return 'この国で1年に生まれる数：約 ' + n + '人'; }, end: '最期：', divs: function (n) { return '分裂 ' + n + '回'; }, toDiv: function (t) { return '分裂までの時間はふつう <b>' + t + '</b> ほど'; }, human: function (c, s) { return c + 'で' + s + 'として生まれた'; }, hlines: function (c, e0, u5) { return c + 'の平均寿命（国連 2023）<b>' + e0 + '歳</b>・5歳までに亡くなる割合（2023）<b>' + u5 + '</b>'; }, perSec: function (n) { return '1秒あたり約' + n; }, bornAt: function (h) { return h + 'で生まれた'; }, hudSurv: function (s) { return '生存率 ' + s; }, surv: function (s, o) { return '同じように生まれたもののうち、ここまで生き延びるのは <b>' + s + '</b>' + (o ? '（' + o + '）' : ''); }, rare: 'これまでで最も低い確率の生き残り' }
-    : { inAll: function (p) { return 'Among all life: ' + p; }, birthsC: function (n) { return 'Born in this country per year: about ' + n; }, end: 'End: ', divs: function (n) { return n + (n === 1 ? ' division' : ' divisions'); }, toDiv: function (t) { return 'A division usually takes about <b>' + t + '</b>'; }, human: function (c, s) { return 'Born in ' + c + ' as a ' + s.toLowerCase(); }, hlines: function (c, e0, u5) { return c + ': life expectancy (UN 2023) <b>' + e0 + '</b> · dying before age 5 (2023) <b>' + u5 + '</b>'; }, perSec: function (n) { return 'about ' + n + ' per second'; }, bornAt: function (h) { return 'Born in ' + h; }, hudSurv: function (s) { return 'Alive ' + s; }, surv: function (s, o) { return 'Of those born like you, <b>' + s + '</b> survive this long' + (o ? ' (' + o + ')' : ''); }, rare: 'Your narrowest survival yet' };
+    : { inAll: function (p) { return 'Among all life: ' + p; }, birthsC: function (n) { return 'Born in this country per year: about ' + n; }, end: 'End: ', divs: function (n) { return n + (n === 1 ? ' division' : ' divisions'); }, toDiv: function (t) { return 'A division usually takes about <b>' + t + '</b>'; }, human: function (c, s) { return 'Born in ' + (c === 'Other countries' ? 'one of the other countries' : c) + ' as a ' + s.toLowerCase(); }, hlines: function (c, e0, u5) { return c + ': life expectancy (UN 2023) <b>' + e0 + '</b> · dying before age 5 (2023) <b>' + u5 + '</b>'; }, perSec: function (n) { return 'about ' + n + ' per second'; }, bornAt: function (h) { return 'Born in ' + h; }, hudSurv: function (s) { return 'Alive ' + s; }, surv: function (s, o) { return 'Of those born like you, <b>' + s + '</b> survive this long' + (o ? ' (' + o + ')' : ''); }, rare: 'Your narrowest survival yet' };
 
   function fillText() {
     $('logoWord').innerHTML = STR.logo(TP.m, TP.e); $('tagline').textContent = STR.tagline;
@@ -2269,7 +2296,10 @@ button { font-family: inherit; }
     lot.done = true; showReveal();
   }
   function birthName(b) {
-    if (b.hum) return T(b.e.n) + '（' + T([b.hum.c[0], b.hum.c[1]]) + '・' + (b.hum.sex === 'M' ? STR.sexM : STR.sexF) + '）';
+    if (b.hum) {
+      var sx = b.hum.sex === 'M' ? STR.sexM : STR.sexF;
+      return T(b.e.n) + (JA ? '（' + b.hum.c[0] + '・' + sx + '）' : ' (' + b.hum.c[1] + ', ' + sx.toLowerCase() + ')');
+    }
     return T(b.e.n);
   }
   function showReveal() {
@@ -2279,7 +2309,7 @@ button { font-family: inherit; }
     lot.rows.forEach(function (r, i) { var o = r.opts.filter(function (x) { return x.key === r.win; })[0]; parts.push(o.label + ' <em>' + prob(o.p) + '</em>'); $('lv' + (i + 1)).hidden = true; });
     $('revPath').innerHTML = parts.join(' › ');
     $('revName').textContent = birthName(b);
-    $('revProbL').textContent = STR.probL + (G.scope !== 'all' ? '（' + T(SCOPE_BY[G.scope].n) + '）' : '');
+    $('revProbL').textContent = STR.probL + (G.scope !== 'all' ? paren(T(SCOPE_BY[G.scope].n)) : '');
     $('revProb').innerHTML = '';
     $('revProb').appendChild(document.createTextNode(probLong(b.p)));
     if (G.scope !== 'all') { var sm = document.createElement('small'); sm.textContent = STR2.inAll(probLong(b.pAll)); $('revProb').appendChild(sm); }
@@ -2356,8 +2386,12 @@ button { font-family: inherit; }
       var lo = 0, hi = 125; for (var it = 0; it < 40; it++) { var mid = (lo + hi) / 2; if (Math.exp(-m.Lam(mid)) > 0.5) lo = mid; else hi = mid; }
       rows.push([RW.hMed, RW.age(Math.round(lo))]);
       var hc = humanCauses(Math.max(0, x - 0.01), c, L.hum.sex), tw = 0; hc.forEach(function (q) { tw += q[1]; });
-      var top = hc.filter(function (q) { return q[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 4);
-      rows.push([RW.hCauses(RW.band(x)), top.map(function (q) { var t = T(HCAUSE[q[0]]) + ' ' + Math.round(q[1] / tw * 100) + '%'; return q[0] === L.cause ? '<em>' + t + '</em>' + RW.you : t; }).join(JA ? '／' : ' / ')]);
+      var hShare = function (q) { var v = q[1] / tw * 100; return v > 0 && v < 1 ? '&lt;1%' : Math.round(v) + '%'; };
+      var top = hc.filter(function (q) { return q[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 4), mine = false;
+      var hl = top.map(function (q) { var t = T(HCAUSE[q[0]]) + ' ' + hShare(q); if (q[0] === L.cause) { mine = true; return '<em>' + t + '</em>' + RW.you; } return t; });
+      /* your own cause is always listed, even when it is not among the top four */
+      if (!mine && L.cause) { var own = hc.filter(function (q) { return q[0] === L.cause; })[0]; hl.push('<em>' + T(HCAUSE[L.cause] || HCAUSE.other) + (own && own[1] > 0 ? ' ' + hShare(own) : '') + '</em>' + RW.you); }
+      rows.push([RW.hCauses(RW.band(x)), hl.join(JA ? '／' : ' / ')]);
       rows.push([RW.human, probLong(EBY.human.w / W_ALL)]);
       rows.push([RW.odds, probLong(L.pAll)]);
       rows.push([RW.world, RW.people(bigCount(EBY.human.w))]);
@@ -2369,16 +2403,16 @@ button { font-family: inherit; }
     rows.push([RW.births, bigCount(e.w) + ' <small>' + RW.perSec(bigCount(e.w / YR)) + '</small>']);
     if (ks.cell) { rows.push([RW.div, '<b>' + pctOrProb(ks.divP) + '</b>']); rows.push([RW.gen, dur(ks.gen)]); }
     else {
-      if (!ks.farm && ks.adult > 0) rows.push([RW.adult, '<b>' + prob(ks.adult) + '</b>' + (ks.adult < 0.5 && ks.adult >= 0.01 ? ' <small>（' + oneIn(ks.adult) + '）</small>' : '')]);
+      if (!ks.farm && ks.adult > 0) rows.push([RW.adult, '<b>' + prob(ks.adult) + '</b>' + (ks.adult < 0.5 && ks.adult >= 0.01 ? ' <small>' + paren(oneIn(ks.adult)) + '</small>' : '')]);
       rows.push([RW.med, dur(ks.med)]);
       rows.push([RW.stages, ks.path.map(function (p2) { var v = p2.loop ? pctOrProb(p2.S) + '/' + RW.perYear : pctOrProb(p2.S); return T(p2.n) + ' ' + v + (p2.fork ? ' → ' + pctOrProb(p2.fork) : ''); }).join(' → ')]);
     }
     var seen = false, list = ks.shares.slice(0, 4).map(function (q) { var t = causeTxt(q[0]) + ' ' + pctOrProb(q[1]); if (q[0] === L.cause) { seen = true; return '<em>' + t + '</em>' + RW.you; } return t; });
-    if (!seen) list.push('<em>' + causeTxt(L.cause) + '</em>' + RW.you);
+    if (!seen) { var ownS = ks.shares.filter(function (q) { return q[0] === L.cause; })[0]; list.push('<em>' + causeTxt(L.cause) + (ownS && ownS[1] > 0 ? ' ' + pctOrProb(ownS[1]) : '') + '</em>' + RW.you); }
     rows.push([RW.causes, list.join(JA ? '／' : ' / ')]);
     if (!ks.farm) rows.push([RW.kids, ks.cell ? RW.divs(L.gen - 1) : kidsCount(Math.floor(L.kids))]);
     var srcs = (e.src || '').split(' ').filter(Boolean).map(function (k) { return SRCN[k] || k; });
-    return { rows: rows, src: RW.src(srcs.join('、'), !!e.est) };
+    return { rows: rows, src: RW.src(srcs.join(JA ? '、' : ', '), !!e.est) };
   }
 
   /* ---------- life ---------- */
@@ -2430,7 +2464,7 @@ button { font-family: inherit; }
     if (L.holdSi !== L.si) refreshHold(L);
     var s = L.stages[L.si], age = dur(L.age), stg = T(s.n);
     if (s.end === 'div') stg = STR.gen(L.gen) + ' · ' + stg;
-    else if (s.loop) stg = stg + '（' + STR.year(L.loopN + 1) + '）';
+    else if (s.loop) stg = stg + paren(STR.year(L.loopN + 1));
     var sc = STR2.hudSurv(survTxt(lifeSurv(L)));
     if (hudCache.age !== age) { hudCache.age = age; $('ageTxt').textContent = age; }
     if (hudCache.stg !== stg) { hudCache.stg = stg; $('stageTxt').textContent = stg; }
@@ -2451,6 +2485,9 @@ button { font-family: inherit; }
     var L = G.life, sc = Math.floor(L.lg * 100), id = L.e.id, S = lifeSurv(L);
     REC.n++; G.newKind = !REC.seen[id]; REC.seen[id] = (REC.seen[id] || 0) + 1;
     REC.bestBy[id] = Math.max(REC.bestBy[id] || 0, sc);
+    if (!REC.minBy || typeof REC.minBy !== 'object') REC.minBy = {};
+    /* first time with minBy: start from the older score record so an earlier, narrower survival is kept */
+    REC.minBy[id] = Math.min(typeof REC.minBy[id] === 'number' ? REC.minBy[id] : Math.pow(10, -(REC.bestBy[id] || 0) / 100), S);
     if (sc > REC.best) REC.best = sc;
     if (typeof REC.minS !== 'number') REC.minS = 1;
     G.newBest = S < REC.minS && S < 0.5; if (S < REC.minS) REC.minS = S;
@@ -2486,6 +2523,12 @@ button { font-family: inherit; }
   }
 
   /* ---------- collection & data ---------- */
+  /* your narrowest survival for one kind, in the same terms as the result screen (older saves only kept a score: 100 × -log10(survival)) */
+  function kindRecord(id) {
+    var m = REC.minBy && REC.minBy[id], b = REC.bestBy && REC.bestBy[id];
+    var S = typeof m === 'number' ? m : (b > 0 ? Math.pow(10, -b / 100) : 1);
+    return S < 0.995 ? prob(S) : '';
+  }
   function openZukan(from) {
     G.zkFrom = from; ui.zukan.hidden = false;
     var body = $('zkBody'); body.innerHTML = '';
@@ -2500,7 +2543,7 @@ button { font-family: inherit; }
         row.children[0].style.background = seen ? KING[k].col : 'rgba(241,244,251,.2)';
         row.children[1].textContent = seen ? T(e.n) + '  ' + STR.zkTimes(seen) : STR.unknown;
         row.children[2].textContent = prob(e.w / W_ALL);
-        row.children[3].textContent = seen ? T(e.fact) + '　' + STR.zkMore(bigCount(e.w), REC.bestBy[e.id] ? fmtInt(REC.bestBy[e.id]) : '') : STR.zkMore(bigCount(e.w), '');
+        row.children[3].textContent = seen ? T(e.fact) + (JA ? '　' : '. ') + STR.zkMore(bigCount(e.w), kindRecord(e.id)) : STR.zkMore(bigCount(e.w), '');
         row.addEventListener('click', function () { row.classList.toggle('open'); });
         body.appendChild(row);
       });
@@ -2635,7 +2678,7 @@ button { font-family: inherit; }
   }
   function boot(data) {
     if (booted) return; booted = true;
-    if (data && data.rec && typeof data.rec === 'object') { for (var k in data.rec) if (REC[k] === undefined || k === 'seen' || k === 'bestBy' || typeof data.rec[k] === 'number') REC[k] = data.rec[k]; }
+    if (data && data.rec && typeof data.rec === 'object') { for (var k in data.rec) if (REC[k] === undefined || k === 'seen' || k === 'bestBy' || (k === 'minBy' && data.rec[k] && typeof data.rec[k] === 'object') || typeof data.rec[k] === 'number') REC[k] = data.rec[k]; }
     if (data && typeof data.soundOn === 'boolean') soundOn = data.soundOn;
     SFX.setOn(soundOn);
     fillText();
