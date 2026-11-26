@@ -15,6 +15,7 @@
 
 ## 遊ぶには
 
+- **公開ページ（誰でも遊べます）：https://kaisetu.github.io/rebirth-odds/**
 - `index.html` をブラウザで開く
 - Claude の artifact 版：https://claude.ai/artifact/XwUeSNcJmAqNYxbQKgMcVr
 
